@@ -120,6 +120,28 @@ The `cacheDirectory` is where the cache is written to. The default stores the ca
 
 The `cacheDirectory` has a field in it `[confighash]` that is replaced by the `configHash` option when webpack is started. The `[confighash]` field is here to help with changes to the configuration by the developer or by a script. For example if the same webpack configuration is used for the `webpack` cli tool and then the `webpack-dev-server` cli tool, they will generate different configuration hashes. `webpack-dev-server` adds plugins for its reloading features, and the default hash function produces a different value with those plugins added.
 
+
+### `sharedCacheDirectory`
+
+The `sharedCacheDirectory` is where the cache is being dropped so that it can be consumed by any other build client that have
+access to that folder.
+
+For now this option supports only physical drives access. 
+
+For instance if you have a shared server named `SHARED-CACHE-SERVER` then you can set the `sharedCacheDirectory` to be
+
+```js
+new HardSourceWebpackPlugin.ParallelModulePlugin({
+  sharedCacheDirectory: {
+    dev: "\\SHARED-CACHE-SERVER\\WEBPACK-BUILD-CACHE\\DEV",  \\for dev machines
+    prod:   "\\SHARED-CACHE-SERVER\\WEBPACK-BUILD-CACHE\\CI" \\for CI machines
+  })
+```
+
+This way each build will try to fetch a cache copy from remote if no cache is available locally.
+It can significanlty reduce you build time specially in CI environment.
+
+
 ### `configHash`
 
 <a name="using-confighash-in-the-cachedirectory"></a>
